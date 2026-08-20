@@ -1,0 +1,13 @@
+# User-level ydotoold: creates a virtual input device for `ydotool type`.
+# Requires rw access to /dev/uinput (fedora-bootstrap grants it via ACL).
+[Unit]
+Description=ydotool user daemon (virtual input for dictation typing)
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ydotoold --socket-path=%t/.ydotool_socket
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

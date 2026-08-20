@@ -1,0 +1,22 @@
+# Dictation daemon: keeps a Whisper model loaded so double-tap-Ctrl dictation
+# starts instantly. See dictated.py for the DICTATE_* environment knobs.
+[Unit]
+Description=Whisper dictation daemon (double-tap Ctrl to toggle)
+Wants=ydotoold.service
+After=ydotoold.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/dictate/venv/bin/python %h/.local/share/dictate/dictated.py
+Environment=YDOTOOL_SOCKET=%t/.ydotool_socket
+# Engine: nemotron = live word-by-word streaming (NVIDIA 0.6B, ~0.5s behind
+# voice); whisper = phrase-at-a-pause on large-v3 (higher accuracy). Swap and
+# `systemctl --user restart dictate` to switch.
+Environment=DICTATE_ENGINE=nemotron
+Environment=DICTATE_MODEL=large-v3
+Environment=DICTATE_LANG=en
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Called by keyd (as root) on double-tap Ctrl. Pokes every logged-in user's
+# dictation daemon by writing one byte to its FIFO. timeout(1) guards against
+# blocking forever if a FIFO exists but its daemon is dead (no reader).
+for f in /run/user/*/dictate.fifo; do
+    [ -p "$f" ] && timeout 1 sh -c "printf t > '$f'" 2>/dev/null &
+done
+wait
